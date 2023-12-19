@@ -104,3 +104,9 @@ int smmObj_getNodeEnergy(int node_nr)
 {
     return smm_node[node_nr].energy;
 }
+
+int smmObj_getNodeNumber(void* nodePtr)
+{
+	smmObject_t* node = (smmObject_t*)nodePtr;
+    return node->number;
+}

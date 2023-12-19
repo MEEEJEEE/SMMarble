@@ -59,6 +59,7 @@ char* smmObj_getNodeName(int node_nr);
 int smmObj_getNodeType(int node_nr);
 int smmObj_getNodeCredit(int node_nr);
 int smmObj_getNodeEnergy(int node_nr);
+int smmObj_getNodeNumber(void* nodePtr);
 
 //element to string
 char* smmObj_getTypeName(int type);
