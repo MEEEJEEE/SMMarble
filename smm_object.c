@@ -1,4 +1,5 @@
 //
+//smm_object.c
 //  smm_node.c
 //  SMMarble
 //
@@ -7,15 +8,20 @@
 
 #include "smm_common.h"
 #include "smm_object.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #define MAX_NODETYPE    7
 #define MAX_GRADE       9
 #define MAX_NODE        100
+#define MAX_CHARNAME    50
 
+//노드 배열 및 노드 개수 변수 정의
 static smmObject_t smm_node[MAX_NODE];
 static int smmObj_noNode = 0;
 
+//노드 이름 배열 정의
 static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
        "강의",
        "식당",
@@ -28,11 +34,11 @@ static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
 
 char* smmObj_getTypeName(int type)
 {
-      return (char*)smmNodeName[type];
+    return (char*)smmNodeName[type];
 }
 
 
-
+//노드타입 및 등급(enum) 정의 
 typedef enum smmObjGrade {
     smmObjGrade_Ap = 0,
     smmObjGrade_A0,
@@ -45,14 +51,14 @@ typedef enum smmObjGrade {
     smmObjGrade_Cm
 } smmObjGrade_e;
 
-//1. 구조체 혈식 정의
+// 1. 구조체 혈식 정의
 typedef struct smmObject {
-       char name[MAX_CHARNAME];
-       smmObjType_e objType; 
-       int type;
-       int credit;
-       int energy;
-       smmObjGrade_e grade;
+	char name[MAX_CHARNAME];
+    smmObjType_e objType; 
+    int type;
+    int credit;
+    int energy;
+    smmObjGrade_e grade;
 } smmObject_t;
 
 
@@ -66,10 +72,16 @@ void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, i
         printf("Error: Node array is full.\n");
         exit(EXIT_FAILURE);
     } 
+    
     smmObject_t* ptr;
     
     // malloc 함수를 사용하여 smmObject_t 구조체의 크기만큼 동적으로 메모리를 할당 
     ptr = (smmObject_t*)malloc(sizeof(smmObject_t));
+    
+    if (ptr == NULL) {
+        printf("Error: Memory allocation failed.\n");
+        exit(EXIT_FAILURE);
+    }
     
     strcpy(ptr->name, name);
     ptr->objType = objType;
@@ -82,6 +94,7 @@ void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, i
 }
 
 //3.관련 함수 변경 
+// 노드의 이름을 반환
 char* smmObj_getNodeName(void* obj)
 {
     smmObject_t* ptr = (smmObject_t*)obj;
@@ -89,7 +102,7 @@ char* smmObj_getNodeName(void* obj)
     return ptr->name;
 }
 
-//4.관련 함수 변경 
+//4.관련 함수 변경- 각 함수는 노드의 타입, 크레딧, 에너지 값을 반환
 int smmObj_getNodeType(int node_nr)
 {
     return smm_node[node_nr].type;
@@ -105,6 +118,7 @@ int smmObj_getNodeEnergy(int node_nr)
     return smm_node[node_nr].energy;
 }
 
+// 노드의 번호를 반환
 int smmObj_getNodeNumber(void* nodePtr)
 {
 	smmObject_t* node = (smmObject_t*)nodePtr;
