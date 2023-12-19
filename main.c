@@ -60,7 +60,7 @@ void* findGrade(int player, char *lectureName); //find the grade from the player
 void printGrades(int player); //print all the grade history of the player
 void actionNode(int player);
 void opening(void);
-void cafeteria(int player);
+void RESTAURANT(int player);
 void foodChance(int player);
 void graduateCheck(int player);
 void printGraduationResults(void);
@@ -190,7 +190,7 @@ int main(int argc, const char * argv[])
 		//3-4. take action at the destination node of the board
         actionNode(turn);
         
-        cafeteria(turn);
+        RESTAURANT(turn);
         foodChance(turn);
         
         
@@ -276,16 +276,16 @@ void actionNode(int player)
             	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         	}
             break;
-        // case  CAFETERIA:
-        case SMMNODE_TYPE_CAFETERIA
-			void CAFETERIA(int player)
+        // case  RESTAURANT:
+        case SMMNODE_TYPE_RESTAURANT
+			void RESTAURANT(int player)
 			{
     			void* boardPtr;
     			boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
     			int sumEnergy = cur_player[player].energy + smmObj_getNodeEnergy(boardPtr);
     
-    	// Check if the current node is a cafeteria and print relevant information
-   				if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_CAFETERIA) {
+    	// Check if the current node is a RESTAURANT and print relevant information
+   				if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_RESTAURANT) {
         		printf("    Eat in %s and charge %i energies (remained energy : %i)\n", smmObj_getNodeName(boardPtr), smmObj_getNodeEnergy(boardPtr), sumEnergy);
     			}
 			}
@@ -312,7 +312,7 @@ void actionNode(int player)
                    cur_player[player].name, REPLENISH_ENERGY_AT_HOME, cur_player[player].energy);
             break;
             
-	//case Experiment:
+	//case GOTOLAB:
 	//실험중 상태로 전환되면서 실험실로 이동 (주사위 눈 범위에서 실험 성공 기준값을 랜덤으로 지정.
 
 // 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
@@ -335,8 +335,23 @@ void foodChance(int player) {
 }
 
 	//case Festival:
-      
-        default:
+      	case SMMNODE_TYPE_FESTIVAL:
+        {
+            if (festival_nr > 0)
+            {
+                // Draw a random festival card
+                int randomFestCard = rand() % festival_nr;
+                void *festCardObj = smmdb_getData(LISTNO_FESTCARD, randomFestCard);
+                
+                // Print the festival card information
+                printf("%s drew a Festival Card: %s\n", cur_player[player].name, smmObj_getNodeName(festCardObj));
+                
+                // Perform the stated mission.
+                performFestivalMission(festCardObj, player);
+            }
+            break;
+            
+        default;
             break;
     }
 }
