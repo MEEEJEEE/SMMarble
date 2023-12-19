@@ -8,6 +8,7 @@
 #ifndef smm_object_h
 #define smm_object_h
 
+//노드 유형 정의 
 #define SMMNODE_TYPE_LECTURE            0
 #define SMMNODE_TYPE_RESTAURANT         1
 #define SMMNODE_TYPE_LABORATORY         2
@@ -18,6 +19,12 @@
 
 #define SMMNODE_TYPE_MAX                7
 
+//객체 유형 정의
+typedef enum smmObjType {
+    smmObjType_board = 0,
+    smmObjType_card,
+    smmObjType_grade
+} smmObjType_e;
 
 /* node type :
     lecture,
