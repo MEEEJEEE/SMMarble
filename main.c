@@ -276,24 +276,44 @@ void actionNode(int player)
             	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         	}
             break;
-/*        // case  CAFETERIA:
+        // case  CAFETERIA:
         case SMMNODE_TYPE_CAFETERIA
-void CAFETERIA(int player)
-{
-    void* boardPtr;
-    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
-    int sumEnergy = cur_player[player].energy + smmObj_getNodeEnergy(boardPtr);
+			void CAFETERIA(int player)
+			{
+    			void* boardPtr;
+    			boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+    			int sumEnergy = cur_player[player].energy + smmObj_getNodeEnergy(boardPtr);
     
-    // Check if the current node is a cafeteria and print relevant information
-    if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_CAFETERIA) {
-        printf("    Eat in %s and charge %i energies (remained energy : %i)\n", smmObj_getNodeName(boardPtr), smmObj_getNodeEnergy(boardPtr), sumEnergy);
-    }
-}
-*/
+    	// Check if the current node is a cafeteria and print relevant information
+   				if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_CAFETERIA) {
+        		printf("    Eat in %s and charge %i energies (remained energy : %i)\n", smmObj_getNodeName(boardPtr), smmObj_getNodeEnergy(boardPtr), sumEnergy);
+    			}
+			}
 
+/*
 	//case Laboratory:
+	
+	if 실험중
+	사전에 실험 성공 기준값 정의
+	주사위 굴려서
+	기준값이상->종료
+	     이하-> 실험중 머뭄
+	     
+	실험 시도마다 에머지 소모,음수가능
+	
+	
+	
+*/	
 	//case Home:
+		case SMMNODE_TYPE_HOME:
+	//지나가는 순간 지정된 보충 에너지만큼 현재 에너지에 더해짐
+			cur_player[player].energy += REPLENISH_ENERGY_AT_HOME;
+            printf("%s passed by home and replenished energy by %d (current energy: %d)\n",
+                   cur_player[player].name, REPLENISH_ENERGY_AT_HOME, cur_player[player].energy);
+            break;
+            
 	//case Experiment:
+	//실험중 상태로 전환되면서 실험실로 이동 (주사위 눈 범위에서 실험 성공 기준값을 랜덤으로 지정.
 
 // 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
 void foodChance(int player) {
