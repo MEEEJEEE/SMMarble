@@ -99,8 +99,11 @@ int main(int argc, const char * argv[])
     {
         //store the parameter set
         //(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
-        void *boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
-        smmdb_addTail(LISTNO_NODE, boardObj);
+        
+		void *boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+        // 수정된 코드
+		//smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+		smmdb_addTail(LISTNO_NODE, boardObj);
         
         if (type == SMMNODE_TYPE_HOME)
            initEnergy = energy;
@@ -110,7 +113,7 @@ int main(int argc, const char * argv[])
     printf("Total number of board nodes : %i\n", board_nr);
     
     
-    for (i = 0;i<board_nr;i++)
+    for (i = 0;i<board_nr; i++)
     {
         void *boardObj = smmdb_getData(LISTNO_NODE, i);
         
@@ -120,7 +123,7 @@ int main(int argc, const char * argv[])
     }
     //printf("(%s)", smmObj_getTypeName(SMMNODE_TYPE_LECTURE));
     
-    #if 0
+#if 0
     //1-2. food card config 
     if ((fp = fopen(FOODFILEPATH,"r")) == NULL)
     {
@@ -152,8 +155,7 @@ int main(int argc, const char * argv[])
     }
     fclose(fp);
     printf("Total number of festival cards : %i\n", festival_nr);
-    #endif
-    
+#endif
     
     //2. Player configuration ---------------------------------------------------------------------------------
     
@@ -163,8 +165,7 @@ int main(int argc, const char * argv[])
         printf("input player no.:");
         scanf("%d", &player_nr);
         fflush(stdin);
-    }
-    while (player_nr < 0 || player_nr >  MAX_PLAYER);
+    } while (player_nr < 0 || player_nr >  MAX_PLAYER);
     
     cur_player = (player_t*)malloc(player_nr * sizeof(player_t));
     generatePlayers(player_nr, initEnergy);
@@ -173,7 +174,6 @@ int main(int argc, const char * argv[])
     while (1) //is anybody graduated?
     {
         int die_result;
-        
         
         //3-1. initial printing
         printf("\n=========================== PLAYER STATUS ===========================\n");
@@ -201,7 +201,8 @@ int main(int argc, const char * argv[])
         //3-6.Check if any player has graduated
         graduateCheck(turn);
     }
-    
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////   
 // Generate new players
 void generatePlayers(int n, int initEnergy) 
@@ -261,23 +262,23 @@ void actionNode(int player)
     int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName(boardPtr);
     void *gradePtr;
-    
+    int turn;
     switch (type)
     {
     //case lecture: 
         case SMMNODE_TYPE_LECTURE:
-			if(cur_player[player].energy >= smmObj_getNodeEnergy(boardPtr))
+			if (smmObj_getNodeType(turn) == SMMNODE_TYPE_LECTURE)
 			{ 
             	cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
             	cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
             
-            	//grade generation
+            	// grade generation
             	gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, smmObjGrade_A0);
             	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         	}
             break;
             
-    // case  RESTAURANT:
+    //case RESTAURANT:
         case SMMNODE_TYPE_RESTAURANT:
         	// Call the RESTAURANT function
             RESTAURANT(player);
@@ -286,32 +287,33 @@ void actionNode(int player)
 
 	//case Laboratory:
 		case SMMNODE_TYPE_LABORATORY:
-	    // Check if the player is in an experiment state
-			if (cur_player[player].flag_graduate == 1)
+	    	// Check if the player is in an experiment state
+			if (cur_player[player].flag_experiment == 1)
 			{
-    		// Randomly set the success threshold for the experiment
+    			// Randomly set the success threshold for the experiment
     			int successThreshold = rand() % MAX_DIE + 1;
     			printf("The success threshold for the Experiment is %d.\n", successThreshold);
 
-    		// Roll the die
+    			// Roll the die
     			int dieRoll = rand() % MAX_DIE + 1;
     			printf("Dice result value: %d\n", dieRoll);
 
-   			 // Check if the experiment is successful
+   				 // Check if the experiment is successful
     			if (dieRoll >= successThreshold)
     			{
-        	// Experiment success
+        			// Experiment success
         			printf("Experiment successful. Ends the Experiment.\n");
-        			cur_player[player].flag_graduate = 0; // End the experiment state
+        			cur_player[player].flag_experiment = 0; // End the experiment state
     			}
     			
     			else
     			{
-        	// Experiment ongoing
+        			// Experiment ongoing
        		 		printf("Experiment ongoing. Energy is consumed.\n");
-        		cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
+        			cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
     			}
 			}
+			break;
 
 	//case Home:
 		case SMMNODE_TYPE_HOME:
@@ -323,7 +325,6 @@ void actionNode(int player)
             
 	//case GOTOLAB:
 		case SMMNODE_TYPE_GOTOLAB:
-		{
             // Transition to the experiment state
             cur_player[player].flag_experiment = 1;
             printf("%s is in the Experiment State.\n", cur_player[player].name);
@@ -331,11 +332,11 @@ void actionNode(int player)
             // Move to the Laboratory
     		cur_player[player].position = SMMNODE_TYPE_LABORATORY;
     		printf("%s goes to the LABORATORY.\n", cur_player[player].name);
-		}
+            break;
+            
 	//case Festival:
       	case SMMNODE_TYPE_FESTIVAL:
-        {
-            if (festival_nr > 0)
+        	if (festival_nr > 0)
             {
                 // Draw a random festival card
                 int randomFestCard = rand() % festival_nr;
@@ -345,13 +346,13 @@ void actionNode(int player)
                 printf("%s drew a Festival Card: %s\n", cur_player[player].name, smmObj_getNodeName(festCardObj));
                 
                 // Perform the stated mission.
-                performFestivalMission(festCardObj, player);
+                //performFestivalMission(festCardObj, player);
             }
             break;
-        }    
+			  
         default:
             break;
-    	
+	}
 }
 
 // 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
@@ -420,6 +421,7 @@ void goForward(int player, int step)
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getNodeName(boardPtr));
 	}
+	
 	else
     {
         printf("%s reached an invalid node.\n", cur_player[player].name);

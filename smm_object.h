@@ -60,30 +60,21 @@ typedef struct smmObject {
     int number;  // 노드 번호 추가
 } smmObject_t;
 
-// 노드 배열 정의  
-extern smmObject_t smm_node[MAX_NODE];
+smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
+
 //element to string
-char* smmObj_getNodeName(int node_nr);
+char* smmObj_getNodeName(void* nodePtr) {
+    smmObject_t* node = (smmObject_t*)nodePtr;
+    return node->name;
+}
 #endif /* smm_object_h */
 
 //object generation
 void smmObj_genNode(char* name, int type, int credit, int energy);
+smmObjGrade_e smmObj_getNodeGrade(void* nodePtr);
 
 //member retrieving
-
-int smmObj_getNodeType(int node_nr);
-int smmObj_getNodeCredit(int node_nr);
-int smmObj_getNodeEnergy(int node_nr);
-int smmObj_getNodeNumber(void* nodePtr);
-
-
-
-
-//object generation
-void smmObj_genNode(char* name, int type, int credit, int energy);
-
-//member retrieving
-char* smmObj_getNodeName(int node_nr);
+//char* smmObj_getNodeName(int nodePtr);
 int smmObj_getNodeType(int node_nr);
 int smmObj_getNodeCredit(int node_nr);
 int smmObj_getNodeEnergy(int node_nr);

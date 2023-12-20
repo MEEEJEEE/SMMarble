@@ -37,8 +37,8 @@ typedef enum {
 */
 
 // smm_object.c 파일 상단에 전역 변수로 선언되어 있는지 확인
-int smmObj_noNode = 0;
-smmObject_t smm_node[MAX_NODE];
+int smmObj_noNode = 0; //노드의 개수를 관리하는 변수
+smmObject_t smm_node[MAX_NODE]; //노드의 배열 추가
 // 노드의 개수를 반환하는 함수 선언 추가
 int getSmmObjNodeCount(void){
 	return smmObj_noNode;
@@ -78,7 +78,7 @@ static int smmObj_noNode = 0;
 
 //2.관련 함수 변경
 //object generation 함수 수정
-smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjType_e objtype, smmObjGrade_e grade)
+smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
 {   
 
 	//먼저 노드 배열이 가득 차 있는지 확인하고, 가득 찼다면 배열이 꽉 찼다는 오류 메시지를 출력하고 프로그램을 종료 
@@ -106,10 +106,12 @@ smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int cr
     ptr->number = getSmmObjNodeCount();  //노드 번호 할당 추가
     smm_node[getSmmObjNodeCount()] = *ptr;  // 노드 배열에 할당된 노드 추가
     
+    // 노드 개수 증가
+    smmObj_noNode++;
     // 메모리를 해제하지 않으면 메모리 누수가 발생함
     // 사용이 끝난 메모리는 반드시 해제되어야 함
     // free 함수를 사용하여 동적으로 할당된 메모리를 해제
-    //free(ptr);
+    free(ptr);
     
 	return ptr;
 }
