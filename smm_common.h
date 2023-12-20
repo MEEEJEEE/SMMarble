@@ -11,7 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_CHARNAME                200
+#ifndef MAX_CHARNAME
+#define MAX_CHARNAME 200
+#endif
 
 #define GRADUATE_CREDIT             30
 #define MAX_DIE                     6
@@ -22,7 +24,7 @@
 #define MAX_GRADE           9
 
 //배열들을 선언
-extern const char *smmNodeName[MAX_NODETYPE];
 extern const char *smmGradeName[MAX_GRADE];
+//extern smmObject_t *smm_node[MAX_NODE];
 
 #endif /* smm_common_h */

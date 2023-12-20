@@ -35,6 +35,8 @@ typedef struct player {
     char name[MAX_CHARNAME];
     int accumCredit;
     int flag_graduate;
+    // 추가: 실험 상태 플래그
+    int flag_experiment;
 } player_t;
 
 static player_t *cur_player;
@@ -330,32 +332,6 @@ void actionNode(int player)
     		cur_player[player].position = SMMNODE_TYPE_LABORATORY;
     		printf("%s goes to the LABATORY.\n", cur_player[player].name);
 		}
-		
-		break;
-		
-		default:
-            break;
-    }
-}
-// 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
-void foodChance(int player) {
-    char c;
-    void* boardPtr;
-    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
-
-    if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_FOOD) {
-        printf("  ==> %s Food Replenishment Chance! Press any key to pick a food card! ", cur_player[player].name);
-        c = getchar();
-        fflush(stdin);
-        int randomIndex = rand() % food_nr;  // Choose a random food card index
-        void* foodCardPtr = smmdb_getData(LISTNO_FOODCARD, randomIndex);
-        int sumEnergy = cur_player[player].energy + smmObj_getNodeCharge(foodCardPtr);
-
-        printf("   ==> %s picks! %s and charges %i (remained energy : %i)\n", cur_player[player].name, smmObj_getNodeName(foodCardPtr), smmObj_getNodeCharge(foodCardPtr), sumEnergy);
-        cur_player[player].energy += smmObj_getNodeCharge(foodCardPtr);  // Update player's energy after picking a food card
-    }
-}
-
 	//case Festival:
       	case SMMNODE_TYPE_FESTIVAL:
         {
@@ -377,6 +353,27 @@ void foodChance(int player) {
             break;
     }
 }
+
+// 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
+void foodChance(int player) {
+    char c;
+    void* boardPtr;
+    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+
+    if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_FOOD) {
+        printf("  ==> %s Food Replenishment Chance! Press any key to pick a food card! ", cur_player[player].name);
+        c = getchar();
+        fflush(stdin);
+        int randomIndex = rand() % food_nr;  // Choose a random food card index
+        void* foodCardPtr = smmdb_getData(LISTNO_FOODCARD, randomIndex);
+        int sumEnergy = cur_player[player].energy + smmObj_getNodeCharge(foodCardPtr);
+
+        printf("   ==> %s picks! %s and charges %i (remained energy : %i)\n", cur_player[player].name, smmObj_getNodeName(foodCardPtr), smmObj_getNodeCharge(foodCardPtr), sumEnergy);
+        cur_player[player].energy += smmObj_getNodeCharge(foodCardPtr);  // Update player's energy after picking a food card
+    }
+}
+
+	
 
 void RESTAURANT(int player)
 {
@@ -422,7 +419,6 @@ void goForward(int player, int step)
 }
 
     free(cur_player);
-    system("PAUSE");
     return 0;
 }
 
