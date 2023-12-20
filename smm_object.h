@@ -4,7 +4,7 @@
 //
 //  Created by MIJI LEE on 2023/12/20.
 //
-
+//선언만
 #ifndef smm_object_h
 #define smm_object_h
 
@@ -22,20 +22,18 @@
 
 #define MAX_CHARNAME 200  // 적절한 값으로 수정
 #define SMMNODE_TYPE_MAX                7
+#define MAX_NODETYPE   				    7
+#define MAX_GRADE      				    9
+#define REPLENISH_ENERGY_AT_HOME 		10
+#define MAX_NODE        				100
 
-
-// 노드 배열 정의
-extern smmObject_t smm_node[MAX_NODETYPE];
-
-#endif /* smm_object_h */
-
+// 객체 유형을 위한 열거형
 typedef enum smmObjType {
     smmObjType_board = 0,
     smmObjType_card,
     smmObjType_grade,
     smmObjType_max // 추가: 객체 유형의 최대값
 } smmObjType_e;
-
 
 // 객체 등급 유형을 위한 열거형
 typedef enum smmObjGrade {
@@ -50,6 +48,35 @@ typedef enum smmObjGrade {
     smmObjGrade_Cm,
     smmObjGrade_max // 추가: 객체 등급의 최대값
 } smmObjGrade_e;
+
+// 구조체 선언
+typedef struct smmObject {
+	char name[MAX_CHARNAME];
+    smmObjType_e objType; 
+    int type;
+    int credit;
+    int energy;
+    smmObjGrade_e grade;
+    int number;  // 노드 번호 추가
+} smmObject_t;
+
+// 노드 배열 정의  
+extern smmObject_t smm_node[MAX_NODE];
+//element to string
+char* smmObj_getNodeName(int node_nr);
+#endif /* smm_object_h */
+
+//object generation
+void smmObj_genNode(char* name, int type, int credit, int energy);
+
+//member retrieving
+
+int smmObj_getNodeType(int node_nr);
+int smmObj_getNodeCredit(int node_nr);
+int smmObj_getNodeEnergy(int node_nr);
+int smmObj_getNodeNumber(void* nodePtr);
+
+
 
 
 //object generation

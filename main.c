@@ -285,7 +285,7 @@ void actionNode(int player)
 			
 
 	//case Laboratory:
-		case SMMNODE_TYPE_LABATORY:
+		case SMMNODE_TYPE_LABORATORY:
 	    // Check if the player is in an experiment state
 			if (cur_player[player].flag_graduate == 1)
 			{
@@ -322,7 +322,7 @@ void actionNode(int player)
             break;
             
 	//case GOTOLAB:
-		case SMMNODE_TYPE_GOTOLAB
+		case SMMNODE_TYPE_GOTOLAB:
 		{
             // Transition to the experiment state
             cur_player[player].flag_experiment = 1;
@@ -330,7 +330,7 @@ void actionNode(int player)
             
             // Move to the Laboratory
     		cur_player[player].position = SMMNODE_TYPE_LABORATORY;
-    		printf("%s goes to the LABATORY.\n", cur_player[player].name);
+    		printf("%s goes to the LABORATORY.\n", cur_player[player].name);
 		}
 	//case Festival:
       	case SMMNODE_TYPE_FESTIVAL:
@@ -348,10 +348,10 @@ void actionNode(int player)
                 performFestivalMission(festCardObj, player);
             }
             break;
-            
-        default;
+        }    
+        default:
             break;
-    }
+    	
 }
 
 // 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
@@ -360,7 +360,7 @@ void foodChance(int player) {
     void* boardPtr;
     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
 
-    if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_FOOD) {
+    if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_FOODCHANCE) {
         printf("  ==> %s Food Replenishment Chance! Press any key to pick a food card! ", cur_player[player].name);
         c = getchar();
         fflush(stdin);
@@ -411,15 +411,23 @@ void goForward(int player, int step)
 {
      void *boardPtr;
      cur_player[player].position += step;
-     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
+     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
      
+     // boardPtr가 NULL인지 확인하여 유효한 노드인지 검사
+    if (boardPtr != NULL)
+    {
      printf("%s go to node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
-                smmObj_getNodeName(boardPtr);
-}
-
-    free(cur_player);
-    return 0;
+                smmObj_getNodeName(boardPtr));
+	}
+	else
+    {
+        printf("%s reached an invalid node.\n", cur_player[player].name);
+        // 유효하지 않은 노드에 도착한 경우 예외 처리 또는 오류 처리를 수행할 수 있음
+    }
+	
+	//free(cur_player);
+    //return 0;
 }
 
 // Game start message
@@ -452,10 +460,13 @@ void graduateCheck(int player)
 void printGraduationResults(void)
 {
     int i;
+    // Iterate through the players
     for (i = 0; i < player_nr; i++)
     {
+    	// Check if the player has the graduation flag set
         if (cur_player[i].flag_graduate)
         {
+        	// Print the player's name and graduation results
             printf("%s's Graduation Results:\n", cur_player[i].name);
             printGrades(i); // Assuming this function prints the grades of the player
             printf("\n");

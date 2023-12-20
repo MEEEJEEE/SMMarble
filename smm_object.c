@@ -5,19 +5,19 @@
 //
 //  Created by MIJI LEE on 2023/12/20.
 //
-
+//정의
 #include "smm_common.h"
-
-#ifndef smm_object.h  //헤더가디언: 중복 포함 방지, 순환 포함 방지
 #include "smm_object.h"
-//#include <stdio.h>
-//#include <stdlib.h>
+
+#ifndef smm_object.c  //헤더가디언: 중복 포함 방지, 순환 포함 방지
+#define smm_object_c
+
+
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-#define MAX_NODETYPE    7
-#define MAX_GRADE       9
 
-#define MAX_NODE        100
 /*#define MAX_CHARNAME    50
 
 // 추가: 상수 정의
@@ -38,11 +38,12 @@ typedef enum {
 
 // smm_object.c 파일 상단에 전역 변수로 선언되어 있는지 확인
 int smmObj_noNode = 0;
+smmObject_t smm_node[MAX_NODE];
 // 노드의 개수를 반환하는 함수 선언 추가
 int getSmmObjNodeCount(void){
 	return smmObj_noNode;
 }
-smmObject_t smm_node[MAX_NODE];
+//노드의 이름을 반환
 
 #endif /* smm_object_h */
 
@@ -57,6 +58,7 @@ const char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
 	"festival"
 };
 
+/*
 // 1. 구조체 혈식 정의
 typedef struct smmObject {
 	char name[MAX_CHARNAME];
@@ -68,7 +70,7 @@ typedef struct smmObject {
     int number;  // 노드 번호 추가
 } smmObject_t;
 
-/*
+
 //노드 배열 및 노드 개수 변수 정의
 static smmObject_t smm_node[MAX_NODE];
 static int smmObj_noNode = 0;
@@ -88,7 +90,6 @@ smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int cr
     
     // malloc 함수를 사용하여 smmObject_t 구조체의 크기만큼 동적으로 메모리를 할당 
     smmObject_t* ptr = (smmObject_t*)malloc(sizeof(smmObject_t));
-    
     
     if (ptr == NULL) {
         printf("Error: Memory allocation failed.\n");
@@ -115,15 +116,11 @@ smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int cr
 
 //3.관련 함수 변경 
 // 노드의 이름을 반환
-char* smmObj_getNodeName(void* obj)
-{
-    smmObject_t* ptr = (smmObject_t*)obj;
-    return ptr->name;
-}
 
-char* smmObj_getGradeName(smmGrade_e grade)
+
+char* smmObj_getGradeName(smmObjGrade_e grade)
 {
-	return smmGreadeName[grade];
+	return smmGradeName[grade];
 }
 
 //4.관련 함수 변경- 각 함수는 노드의 타입, 크레딧, 에너지 값을 반환
