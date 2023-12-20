@@ -26,7 +26,6 @@
 static int board_nr;
 static int food_nr;
 static int festival_nr;
-
 static int player_nr;
 
 //플레이어 및 게임 변수 및 구조체
@@ -251,8 +250,7 @@ void printPlayerStatus(void)
                       cur_player[i].position);
      }
 }
-
-
+			
 // Action code when a player stays at a node
 void actionNode(int player)
 {
@@ -264,7 +262,7 @@ void actionNode(int player)
     
     switch (type)
     {
-        //case lecture: 
+    //case lecture: 
         case SMMNODE_TYPE_LECTURE:
 			if(cur_player[player].energy >= smmObj_getNodeEnergy(boardPtr))
 			{ 
@@ -276,45 +274,69 @@ void actionNode(int player)
             	smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
         	}
             break;
-        // case  RESTAURANT:
-        case SMMNODE_TYPE_RESTAURANT
-			void RESTAURANT(int player)
+            
+    // case  RESTAURANT:
+        case SMMNODE_TYPE_RESTAURANT:
+        	// Call the RESTAURANT function
+            RESTAURANT(player);
+            break;
+			
+
+	//case Laboratory:
+		case SMMNODE_TYPE_LABATORY:
+	    // Check if the player is in an experiment state
+			if (cur_player[player].flag_graduate == 1)
 			{
-    			void* boardPtr;
-    			boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
-    			int sumEnergy = cur_player[player].energy + smmObj_getNodeEnergy(boardPtr);
-    
-    	// Check if the current node is a RESTAURANT and print relevant information
-   				if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_RESTAURANT) {
-        		printf("    Eat in %s and charge %i energies (remained energy : %i)\n", smmObj_getNodeName(boardPtr), smmObj_getNodeEnergy(boardPtr), sumEnergy);
+    		// Randomly set the success threshold for the experiment
+    			int successThreshold = rand() % MAX_DIE + 1;
+    			printf("The success threshold for the Experiment is %d.\n", successThreshold);
+
+    		// Roll the die
+    			int dieRoll = rand() % MAX_DIE + 1;
+    			printf("Dice result value: %d\n", dieRoll);
+
+   			 // Check if the experiment is successful
+    			if (dieRoll >= successThreshold)
+    			{
+        	// Experiment success
+        			printf("Experiment successful. Ends the Experiment.\n");
+        			cur_player[player].flag_graduate = 0; // End the experiment state
+    			}
+    			
+    			else
+    			{
+        	// Experiment ongoing
+       		 		printf("Experiment ongoing. Energy is consumed.\n");
+        		cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
     			}
 			}
 
-/*
-	//case Laboratory:
-	
-	if 실험중
-	사전에 실험 성공 기준값 정의
-	주사위 굴려서
-	기준값이상->종료
-	     이하-> 실험중 머뭄
-	     
-	실험 시도마다 에머지 소모,음수가능
-	
-	
-	
-*/	
 	//case Home:
 		case SMMNODE_TYPE_HOME:
-	//지나가는 순간 지정된 보충 에너지만큼 현재 에너지에 더해짐
+		//In addition to the current energy as soon as it passes, as much as the supplemental energy specified
 			cur_player[player].energy += REPLENISH_ENERGY_AT_HOME;
-            printf("%s passed by home and replenished energy by %d (current energy: %d)\n",
+            printf("%s passed by home and replenished Energy by %d (current energy: %d)\n",
                    cur_player[player].name, REPLENISH_ENERGY_AT_HOME, cur_player[player].energy);
             break;
             
 	//case GOTOLAB:
-	//실험중 상태로 전환되면서 실험실로 이동 (주사위 눈 범위에서 실험 성공 기준값을 랜덤으로 지정.
-
+		case SMMNODE_TYPE_GOTOLAB
+		{
+            // Transition to the experiment state
+            cur_player[player].flag_experiment = 1;
+            printf("%s is in the Experiment State.\n", cur_player[player].name);
+            
+            // Move to the Laboratory
+    		cur_player[player].position = SMMNODE_TYPE_LABORATORY;
+    		printf("%s goes to the LABATORY.\n", cur_player[player].name);
+		}
+		
+		break;
+		
+		default:
+            break;
+    }
+}
 // 플레이어가 게임 보드에서 음식 이벤트에 참여하도록 하는 기능
 void foodChance(int player) {
     char c;
@@ -356,6 +378,17 @@ void foodChance(int player) {
     }
 }
 
+void RESTAURANT(int player)
+{
+    void* boardPtr;
+    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
+    int sumEnergy = cur_player[player].energy + smmObj_getNodeEnergy(boardPtr);
+    
+// Check if the current node is a RESTAURANT and print relevant information
+   	if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_RESTAURANT) {
+    printf(" Eat in %s and charge %i energies (remained energy : %i)\n", smmObj_getNodeName(boardPtr), smmObj_getNodeEnergy(boardPtr), sumEnergy);
+    }
+}
 
 // Roll a die
 int rolldie(int player)
