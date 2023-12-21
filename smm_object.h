@@ -26,7 +26,7 @@
 #define MAX_GRADE      				    9
 #define REPLENISH_ENERGY_AT_HOME 		10
 #define MAX_NODE        				100
-
+#define MAX_PLAYERS 					4
 // 객체 유형을 위한 열거형
 typedef enum smmObjType {
     smmObjType_board = 0,
@@ -67,11 +67,13 @@ char* smmObj_getNodeName(void* nodePtr) {
     smmObject_t* node = (smmObject_t*)nodePtr;
     return node->name;
 }
-#endif /* smm_object_h */
 
 //object generation
 void smmObj_genNode(char* name, int type, int credit, int energy);
 smmObjGrade_e smmObj_getNodeGrade(void* nodePtr);
+
+#endif /* smm_object_h */
+
 
 //member retrieving
 //char* smmObj_getNodeName(int nodePtr);

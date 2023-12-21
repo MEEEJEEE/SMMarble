@@ -8,12 +8,12 @@
 #ifndef smm_common_h
 #define smm_common_h
 
+#include "smm_object.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifndef MAX_CHARNAME
 #define MAX_CHARNAME 200
-#endif
 
 #define GRADUATE_CREDIT             30
 #define MAX_DIE                     6
@@ -24,7 +24,8 @@
 #define MAX_GRADE           9
 
 //배열들을 선언
-extern const char *smmGradeName[MAX_GRADE];
+//extern const char *smmGradeName[MAX_GRADE];  소스코드파일 간 전역 변수 공유 사용 금지 (즉, extern 문법 사용 금지)
 //extern smmObject_t *smm_node[MAX_NODE];
+const char* smmGradeName[MAX_GRADE];
 
 #endif /* smm_common_h */
