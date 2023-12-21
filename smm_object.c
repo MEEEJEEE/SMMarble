@@ -18,24 +18,6 @@
 #include <string.h>
 
 
-/*#define MAX_CHARNAME    50
-
-// 추가: 상수 정의
-#define REPLENISH_ENERGY_AT_HOME 10
-
-// 추가: 파일에서 읽은 데이터에 대한 에러 처리를 위한 매크로
-#define READ_SUCCESS 4
-
-// smm_object.c 파일 내에서 smmObj_noNode 변수 선언
-int smmObj_noNode = 0;
-//smmObject_t smm_node[MAX_NODE];
-// 추가: 파일에서 읽은 데이터에 대한 에러 처리를 위한 열거형
-typedef enum {
-    FILE_READ_SUCCESS = 4,
-    FILE_READ_FAILURE = 0
-} FileReadResult;
-*/
-
 // smm_object.c 파일 상단에 전역 변수로 선언되어 있는지 확인
 int smmObj_noNode = 0; //노드의 개수를 관리하는 변수
 smmObject_t smm_node[MAX_NODE]; //노드의 배열 추가
@@ -125,7 +107,7 @@ char* smmObj_getGradeName(smmObjGrade_e grade)
 	return smmGradeName[grade];
 }
 
-//4.관련 함수 변경- 각 함수는 노드의 타입, 크레딧, 에너지 값을 반환
+//4.관련 함수 변경- 각 함수는 노드의 타입, 크레딧, 에너지 값을 반환 
 int smmObj_getNodeType(int node_nr)
 {
     return smm_node[node_nr].type;
