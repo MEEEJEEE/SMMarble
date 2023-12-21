@@ -254,7 +254,7 @@ void actionNode(int player)
             if (cur_player[player].energy >= smmObj_getwNodeEnergy(boardPtr) && !smmObj_isNodeVisited(boardPtr))
 			{
 				// If the player has enough energy and has not visited the node
-				printf("You can take the lecture.\n");
+				printf("You can take the lecture %s.\n", smmObj_getNodeName(boardPtr));
 				 
 				 // Prompt the player to decide whether to attend or drop the lecture
 	        	printf("Would you like to take the lecture? (Y: 1, N: press any key) - ");
@@ -275,12 +275,12 @@ void actionNode(int player)
 					// Mark the lecture as attended
 	                smmObj_setNodeVisited(boardPtr, 1);
 	                
-	                printf("Successfully attended the lecture. Grade: %d\n", randomGrade);
+	                printf("Successfully attended the lecture %s. Grade: %d\n",smmObj_getNodeName(boardPtr), randomGrade);
 	        	}
 	        	else
 	        	{
             		// If drop a lecture
-            		printf("Decided not to attend the lecture. Lecture dropped.\n");
+            		printf("Decided not to attend the lecture %s. Lecture dropped.\n", smmObj_getNodeName(boardPtr));
         		}
         	}
 		    else
@@ -288,11 +288,11 @@ void actionNode(int player)
 			    // If not able to take, print the reason
 			    if (cur_player[player].energy < smmObj_getNodeEnergy(boardPtr))
 			    {
-			        printf("Not able to take the lecture. Insufficient energy.\n");
+			        printf("Not able to take the lecture %s. Insufficient energy.\n", smmObj_getNodeName(boardPtr));
 			    }
 			    else if (smmObj_isNodeVisited(boardPtr))
 			    {
-			        printf("Not able to take the lecture. Already attended.\n");
+			        printf("Not able to take the lecture %s. Already attended.\n", smmObj_getNodeName(boardPtr));
 			    }
 			}	
 		}
