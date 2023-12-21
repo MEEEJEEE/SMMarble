@@ -62,27 +62,17 @@ typedef struct smmObject {
 
 smmObject_t* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
 
-//element to string
-char* smmObj_getNodeName(void* nodePtr) {
-    smmObject_t* node = (smmObject_t*)nodePtr;
-    return node->name;
-}
 
-//object generation
-void smmObj_genNode(char* name, int type, int credit, int energy);
-smmObjGrade_e smmObj_getNodeGrade(void* nodePtr);
-
-#endif /* smm_object_h */
-
-
-//member retrieving
-//char* smmObj_getNodeName(int nodePtr);
+// element to string
+char* smmObj_getNodeName(void* nodePtr);
 int smmObj_getNodeType(int node_nr);
 int smmObj_getNodeCredit(int node_nr);
 int smmObj_getNodeEnergy(int node_nr);
 int smmObj_getNodeNumber(void* nodePtr);
 
-//element to string
-char* smmObj_getTypeName(int type);
+// object generation
+void smmObj_genNode(char* name, int type, int credit, int energy);
+smmObjGrade_e smmObj_getNodeGrade(void* nodePtr);
 
+#endif /* smm_object_h */
 

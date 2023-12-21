@@ -1,6 +1,6 @@
 //
 //  main.c
-//Implementation of game initialization, board setup, player creation, and game progression
+//  Implementation of game initialization, board setup, player creation, and game progression
 //  SMMarble
 //
 //  Created by MIJI LEE on 2023/12/19.
@@ -35,8 +35,7 @@ typedef struct player {
     char name[MAX_CHARNAME];
     int accumCredit;             // Accumulated credits
     int flag_graduate;           // Experiment flag
-    // 추가: 실험 상태 플래그
-    int flag_experiment;
+    int flag_experiment;		 //// ADD : Experiment Status Flag
 } player_t;
 
 static player_t *cur_player;
@@ -119,14 +118,17 @@ int main(int argc, const char * argv[])
     }
     
     printf("\n\nReading food card component......\n");
-    while () //read a food parameter set
+    while (fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4)  //read a food parameter set
     {
         //store the parameter set
+        // Assuming your food card data format is similar to board nodes
+	    void* foodCardObj = smmObj_genObject(name, smmObjType_card, type, credit, energy, smmObjGrade_A0);
+	    smmdb_addTail(LISTNO_FOODCARD, foodCardObj);
+	    food_nr++;
+}
     }
     fclose(fp);
     printf("Total number of food cards : %i\n", food_nr);
-    
-    
     
     //1-3. festival card config 
     if ((fp = fopen(FESTFILEPATH,"r")) == NULL)
@@ -136,10 +138,14 @@ int main(int argc, const char * argv[])
     }
     
     printf("\n\nReading festival card component......\n");
-    while () //read a festival card string
-    {
-        //store the parameter set
+    
+    while  (fscanf(fp, "%s", name) == 1) {
+	    // Assuming your festival card data format includes only names
+	    void* festCardObj = smmObj_genObject(name, smmObjType_card, 0, 0, 0, smmObjGrade_A0);
+	    smmdb_addTail(LISTNO_FESTCARD, festCardObj);
+	    festival_nr++;
     }
+    
     fclose(fp);
     printf("Total number of festival cards : %i\n", festival_nr);
 #endif
@@ -447,7 +453,7 @@ void goForward(int player, int step)
      cur_player[player].position += step;
      boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
      
-     // boardPtr가 NULL인지 확인하여 유효한 노드인지 검사
+     // Check if boardPtr is NULL to verify if it's a valid node
     if (boardPtr != NULL)
     {
      printf("%s go to node %i (name: %s)\n", 
@@ -458,11 +464,8 @@ void goForward(int player, int step)
 	else
     {
         printf("%s reached an invalid node.\n", cur_player[player].name);
-        // 유효하지 않은 노드에 도착한 경우 예외 처리 또는 오류 처리를 수행할 수 있음
+        // Handle exceptions or errors when arriving at an invalid node
     }
-	
-	//free(cur_player);
-    //return 0;
 }
 
     
@@ -471,7 +474,8 @@ void goForward(int player, int step)
 // Game start message
 void opening(void) {
     printf("\n\n=============================================================================\n\n");
-    printf("             **Sookmyung Marble** Let's Graduate!! (total credit : 30)             \n");
+    printf("        		     ** Welcome to Sookmyung Marble Game!! **            	       \n");
+    printf("              	     Let's Graduate with a Total Credit of 30     			       \n");
     printf("\n=============================================================================\n\n\n");
 } 
 
