@@ -49,7 +49,6 @@ static char player_name[MAX_PLAYER][MAX_CHARNAME];
 #endif
 
 //function prototypes
-int isGraduated(void); //check if any player is graduated
  //print grade history of the player
 void generatePlayers(int player_nr, int initEnergy);
 void goForward(int player, int step); //make player go "step" steps on the board (check if player is graduated)
@@ -63,7 +62,7 @@ void actionNode(int player);
 void opening(void);
 void RESTAURANT(int player);
 void foodChance(int player);
-void graduateCheck(int player);
+void graduateCheck(int player);  //check if any player is graduated
 void printGraduationResults(int player);
 
 
@@ -160,7 +159,6 @@ int main(int argc, const char * argv[])
 #endif
     
     //2. Player configuration ---------------------------------------------------------------------------------
-    
     do
     {
         //input player number to player_nr
@@ -259,7 +257,7 @@ void actionNode(int player)
     int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName(boardPtr);
     void *gradePtr;
-    int turn = 0; // turn 변수를 초기화
+    int turn = 0; // turn 변수를 초기화 
     
     switch (type)
     {
@@ -329,7 +327,7 @@ void actionNode(int player)
     			int successThreshold = rand() % MAX_DIE + 1;
     			printf("The success threshold for the Experiment is %d.\n", successThreshold);
 
-    			// Roll the die
+    			// Roll the dice
     			int dieRoll = rand() % MAX_DIE + 1;
     			printf("Dice result value: %d\n", dieRoll);
 
@@ -392,7 +390,8 @@ void actionNode(int player)
 void RESTAURANT(int player)
 {
     void* boardPtr;
-    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position); //현재 플레이어의 위치에 대한 노드 정보를 얻기 위해 smmdb_getData 함수를 사용하여 노드를 가져오고, 이 정보는 boardPtr에 저장
+    boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position); //Retrieve node information at the current player's position using the 'smmdb_getData' function 
+																		//and store this information in the 'boardPtr'
     
 	// Check if the current node is a RESTAURANT and print relevant information
    	if (smmObj_getNodeType(boardPtr) == SMMNODE_TYPE_RESTAURANT) {
@@ -409,7 +408,6 @@ void RESTAURANT(int player)
 void foodChance(int player) {
     char c;
     void* boardPtr;
-    int sumEnergy;
     boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
 	
 	// Check if the current node is FOODCHANCE
@@ -422,11 +420,10 @@ void foodChance(int player) {
         int randomIndex = rand() % food_nr;
         void* foodCardPtr = smmdb_getData(LISTNO_FOODCARD, randomIndex);
         
-        printf("   ==> %s picks! %s replenishing %s energy. (remained energy : %i)\n", 
+        printf("   ==> %s picks! %s replenishing %s energy.\n", 
 				cur_player[player].name,
 				smmObj_getNodeName(foodCardPtr),
-				smmObj_getNodeCharge(foodCardPtr),
-				sumEnergy);
+				smmObj_getNodeCharge(foodCardPtr));
 				
         cur_player[player].energy += smmObj_getNodeCharge(foodCardPtr);  // Update player's energy after picking a food card
     }
